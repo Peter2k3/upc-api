@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import upc.api.mapper.TimeUtils;
-import upc.api.model.Aviso;
+import upc.api.model.Notice;
 import upc.api.repository.AvisosRepository;
 
 import java.time.LocalDateTime;
@@ -14,33 +14,44 @@ import java.util.Optional;
 public class AvisoService {
 
     @Autowired
-    TimeUtils timeUtils;
-
-    @Autowired
-    AvisosRepository avisosRepository;
+    private AvisosRepository avisosRepository;
 
     @Transactional
-    public void saveAviso(Aviso aviso){
-        if (aviso.isFijado(true)) changeFijado(aviso);
-        aviso.setFechaCreacion(LocalDateTime.now());
+    public void saveAviso(Notice aviso) {
+        if (Boolean.TRUE.equals(aviso.getFijado())) {
+            changeFijado();
+        }
+        aviso.setCreationDate(LocalDateTime.now());
         avisosRepository.save(aviso);
     }
 
-    public void changeFijado(Aviso aviso){ //Para cambiar el que este fijado a false
-        Optional<Aviso> fijado = avisosRepository.findByFijado(true);
-        fijado.ifPresent(value -> value.setFijado(false));
+    public void changeFijado() { // Ahora cambia cualquier aviso fijado a false
+        Optional<Notice> fijado = avisosRepository.findByFijado(true);
+        fijado.ifPresent(value -> {
+            value.setFijado(false);
+            avisosRepository.save(value); // Guardar los cambios
+        });
     }
 
-    public Optional<Aviso> getFijado(){
+    public Optional<Notice> getFijado() {
         return avisosRepository.findByFijado(true);
     }
 
-    public Optional<Aviso> obtenerAviso(Integer idAviso){
+    public Optional<Notice> obtenerAviso(Integer idAviso) {
         return avisosRepository.findById(idAviso);
     }
 
-    public void desactivarAviso(Integer idAviso){
-        Optional<Aviso> aviso = avisosRepository.findById(idAviso);
-        aviso.ifPresent(value -> value.setStatus(false));
+    @Transactional
+    public void desactivarAviso(Integer idAviso) {
+        Optional<Notice> aviso = avisosRepository.findById(idAviso);
+        aviso.ifPresent(value -> {
+            value.setStatus(false);
+            avisosRepository.save(value); // Guardar el cambio
+        });
+    }
+
+    @Transactional
+    public void borrarAviso(Integer idAviso) {
+        avisosRepository.deleteById(idAviso);
     }
 }
