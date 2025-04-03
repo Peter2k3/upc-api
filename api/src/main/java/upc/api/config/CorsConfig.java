@@ -14,8 +14,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                    .allowedOrigins("https://updc-eight.vercel.app") // Cambia por tu dominio de producción
-                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                    .allowedOrigins(
+                        "https://updc-eight.vercel.app", // Producción
+                        "http://localhost:5173" // Desarrollo (Vite en local)
+                    ).allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(true);
             }
