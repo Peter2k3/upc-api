@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import upc.api.model.Notice;
 import upc.api.service.AvisoService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -24,6 +25,11 @@ public class AvisoController {
     @GetMapping
     public Optional<Notice> getFijado(){
         return avisoService.getFijado();
+    }
+
+    @GetMapping("/all")
+    public List<Notice> getNotices(){
+        return avisoService.getAllNotices();
     }
 
     @PutMapping

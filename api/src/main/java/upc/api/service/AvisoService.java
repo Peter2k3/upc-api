@@ -8,6 +8,7 @@ import upc.api.model.Notice;
 import upc.api.repository.AvisosRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,6 +40,10 @@ public class AvisoService {
 
     public Optional<Notice> obtenerAviso(Integer idAviso) {
         return avisosRepository.findById(idAviso);
+    }
+
+    public List<Notice> getAllNotices(){
+        return avisosRepository.findAll();
     }
 
     @Transactional
