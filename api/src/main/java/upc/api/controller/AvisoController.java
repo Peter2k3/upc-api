@@ -50,4 +50,9 @@ public class AvisoController {
     public void borrarAviso(@PathVariable Integer idAviso) {
         avisoService.borrarAviso(idAviso);
     }
+
+    @GetMapping("/{id}")
+    public Optional<Notice> getById(@PathVariable Integer id){
+        return avisoService.getById(id);
+    }
 }

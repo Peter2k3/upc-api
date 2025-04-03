@@ -59,4 +59,8 @@ public class AvisoService {
     public void borrarAviso(Integer idAviso) {
         avisosRepository.deleteById(idAviso);
     }
+
+    public Optional<Notice> getById(Integer idNotice){
+        return avisosRepository.findById(idNotice);
+    }
 }
