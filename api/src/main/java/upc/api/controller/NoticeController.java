@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import upc.api.model.Notice;
-import upc.api.service.AvisoService;
+import upc.api.service.NoticeService;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +15,7 @@ import java.util.Optional;
 public class AvisoController {
 
     @Autowired
-    AvisoService avisoService;
+    NoticeService avisoService;
 
     @PostMapping
     public void saveAviso(@RequestBody Notice aviso){//Este endpoind editara un aviso o creará uno nueno si no tiene id
