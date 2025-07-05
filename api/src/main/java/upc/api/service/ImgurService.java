@@ -1,5 +1,7 @@
 package upc.api.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -8,7 +10,6 @@ import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,8 @@ public class ImgurService {
 
     @Value("${imgur.client.id}")
     private String clientId;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Sube una imagen a Imgur y devuelve la URL
@@ -40,12 +43,13 @@ public class ImgurService {
                 HttpEntity responseEntity = response.getEntity();
                 String responseString = EntityUtils.toString(responseEntity);
 
-                JSONObject jsonResponse = new JSONObject(responseString);
-                if (jsonResponse.getBoolean("success")) {
+                JsonNode jsonResponse = objectMapper.readTree(responseString);
+                if (jsonResponse.get("success").asBoolean()) {
                     // Devolver la URL directa de la imagen
-                    return jsonResponse.getJSONObject("data").getString("link");
+                    return jsonResponse.get("data").get("link").asText();
                 } else {
-                    throw new IOException("Error al subir la imagen a Imgur: " + jsonResponse.getString("data"));
+                    throw new IOException("Error al subir la imagen a Imgur: " +
+                        jsonResponse.get("data").asText());
                 }
             }
         }

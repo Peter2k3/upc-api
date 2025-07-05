@@ -1,107 +1,68 @@
 package upc.api.model;
 
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import upc.api.model.enums.TipoAviso;
+import upc.api.model.enums.PrioridadAviso;
+
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.*;
-
-@Entity(name = "notices")
+@Entity
+@Table(name = "avisos")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Notice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
+    @Column(name = "titulo", nullable = false)
+    private String titulo;
 
-    @Column(length = 100, nullable = false)
-    private String description;
+    @Column(name = "contenido", columnDefinition = "TEXT")
+    private String contenido;
 
-    @Column(nullable = false)
-    private LocalDateTime creationDate;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo")
+    private TipoAviso tipo;
 
-    @Column(nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime startDate;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "prioridad")
+    private PrioridadAviso prioridad;
 
-    @Column(nullable = false)
-    private LocalDateTime endDate;
+    @Builder.Default
+    @Column(name = "activo")
+    private Boolean activo = true;
 
-    @Column(nullable = false)
-    private Boolean status; // Activo o inactivo
+    @Builder.Default
+    @Column(name = "fijado")
+    private Boolean fijado = false;
 
-    @Column(nullable = false)
-    private Boolean fijado;
+    @Column(name = "fecha_inicio")
+    private LocalDateTime fechaInicio;
 
-    public Integer getId() {
-        return id;
-    }
+    @Column(name = "fecha_fin")
+    private LocalDateTime fechaFin;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    public String getName() {
-        return name;
-    }
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    private User author;
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-    }
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
-    public Boolean getFijado() {
-        return fijado;
-    }
-
-    public void setFijado(Boolean fijado) {
-        this.fijado = fijado;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "imagen_id")
+    private Image imagen;
 }

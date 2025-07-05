@@ -1,9 +1,9 @@
 package upc.api.service;
 
-import mx.ccgsgroup.ccgs_backend_api.entity.User;
-
 import java.util.List;
 import java.util.Optional;
+
+import upc.api.model.User;
 
 public interface IUserService {
     User saveUser(User user);
@@ -30,11 +30,7 @@ public interface IUserService {
 
     void updateLastAccess(Long id);
 
-    Optional<User> findByUsername(String username);
-
     Optional<User> findByEmail(String email);
-
-    Boolean existsByUsername(String username);
 
     Boolean existsByEmail(String email);
 }
